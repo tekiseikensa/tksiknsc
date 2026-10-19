@@ -14,14 +14,6 @@
     .step-badge { background-color: #f59e0b; color: #fff; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-right: 12px; font-size: 14px; }
     .step-text { font-size: 16px; font-weight: bold; color: #1e293b; }
 
-    /* ログイン画面用 */
-    #loginScreen { text-align: center; padding: 20px; }
-    .input-group { margin: 15px 0; text-align: left; }
-    .input-group label { font-weight: bold; font-size: 14px; color: #555; }
-    .input-group input { width: 100%; padding: 12px; margin-top: 5px; border: 2px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-    .btn-login { display: block; width: 100%; padding: 15px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-    #main-content { display: none; } /* 初期状態は隠す */
-
     /* 実地テスト共通 */
     .test-list { display: flex; flex-direction: column; gap: 20px; }
     .test-container { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding-bottom: 15px;}
@@ -138,276 +130,242 @@
 <body>
 
 <div class="container">
+    <h1>WEB運転適性検査</h1>
+
+    <!-- Step 1 (実地テスト) -->
+    <div class="step-title"><span class="step-badge">Step.1</span><span class="step-text">実地テスト（全7問）</span></div>
     
-    <!-- ログインロック画面 -->
-    <div id="loginScreen">
-        <h1 style="border:none; margin-bottom:5px;">WEB運転適性検査</h1>
-        <p style="color:#7f8c8d; font-size:14px; margin-bottom:30px;">現場で指定された情報を入力してください</p>
-        <div class="input-group">
-            <label>受験番号（例: 001）</label>
-            <input type="text" id="userId" placeholder="番号を入力">
+    <div class="test-list">
+        <!-- T1 -->
+        <div class="test-container">
+            <div class="test-header">問1. 情報処理スピード</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap" style="flex-direction:column; background:transparent; border:none; height:auto;">
+                    <div style="width:40px; height:40px; border:2px solid #475569; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:1px; margin:0 auto 5px; background:#fff;">
+                        <div class="d-t1-obj"></div><div class="d-t1-obj"></div><div class="d-t1-obj"></div>
+                    </div>
+                    <div style="display:flex; justify-content:center; gap:5px;">
+                        <div style="border:1px solid #cbd5e1; width:25px; height:25px; display:flex; align-items:center; justify-content:center; background:#fff;"><div style="width:6px; height:6px; background:#2563eb;"></div></div>
+                        <div style="border:2px solid #ef4444; width:25px; height:25px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; background:#fee2e2;">
+                            <div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div>
+                        </div>
+                        <div style="border:1px solid #cbd5e1; width:25px; height:25px; display:flex; align-items:center; justify-content:center; background:#fff;"><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div></div>
+                    </div>
+                </div>
+                <div class="test-desc">
+                    【目的】運転中に必要な標識や情報を、どれだけ素早く正確に処理できるかを測ります。<br>
+                    【操作】上部に出題される「見本」と同じ数の図形が入っているパネルを、<span>下の4つの選択肢の中から直接タップ</span>してください。（制限時間15秒）
+                </div>
+            </div>
+            <div class="game-area" style="flex-direction: column; justify-content: flex-start; padding-top: 15px;">
+                <div style="width: 100%; max-width: 320px; position: relative; display: flex; justify-content: center; align-items: center; margin: 0 auto 12px;">
+                    <div class="sample-box" id="t1-sample"></div>
+                    <div id="t1-timer-box" style="position: absolute; right: 0; font-size: 13px; font-weight: bold; color: #ef4444; display: none; background: #fee2e2; padding: 4px 8px; border-radius: 8px; border: 2px solid #ef4444; text-align: center;">残り<br><span id="t1-sec" style="font-size:16px;">15</span>秒</div>
+                </div>
+                <div class="options-grid" id="t1-opts"></div>
+            </div>
+            <button id="btn-t1" class="btn-start-game" onclick="startT1()">スタート</button>
+            <div id="msg-t1" class="msg-game"></div>
         </div>
-        <div class="input-group">
-            <label>合言葉（パスコード）</label>
-            <input type="password" id="passcode" placeholder="4桁の数字">
+
+        <!-- T2 -->
+        <div class="test-container">
+            <div class="test-header">問2. 空間把握（車幅・隙間感覚）</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap">
+                    <div class="d-t2-obs" style="left:15%;"></div><div class="d-t2-obs" style="right:15%;"></div>
+                    <div class="d-t2-cir"></div>
+                </div>
+                <div class="test-desc">
+                    【目的】狭い道でのすれ違いや駐車時に必要な、車幅感覚と距離感を測ります。<br>
+                    【操作】「スタート」を押すと青い円が大きくなります。<span>「2つの障害物の間をギリギリ通れるサイズ」で「STOP」をタップ</span>してください。（全3回）
+                </div>
+            </div>
+            <div id="t2-area">
+                <div class="obs-circle" id="t2-obs1" style="width:60px; height:60px; left:20px; top:50px;">障害</div>
+                <div class="obs-circle" id="t2-obs2" style="width:80px; height:80px; left:200px; top:20px;">障害</div>
+                <div id="t2-circle" class="growing-circle-t2" style="left:140px; top:90px; width:0; height:0;"></div>
+            </div>
+            <button id="btn-t2" class="btn-start-game" style="background:#3b82f6;" onclick="actionT2()">スタート</button>
+            <div id="msg-t2" class="msg-game"></div>
         </div>
-        <button class="btn-login" onclick="login()">検査をスタート</button>
+
+        <!-- T3 -->
+        <div class="test-container">
+            <div class="test-header">問3. 反射神経</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap"><div class="d-t3-box">タップ！</div></div>
+                <div class="test-desc">
+                    【目的】前車の急ブレーキや飛び出しに対して、瞬時に反応できるかを測ります。<br>
+                    【操作】下のグレーの枠が<span>「赤色（タップ！）」に変わった瞬間に素早くタップ</span>してください。
+                </div>
+            </div>
+            <div id="t3-area" class="game-area" style="background:#94a3b8; color:white; font-weight:bold; font-size:20px; cursor:pointer;" onclick="actT3()">待機</div>
+            <button id="btn-t3" class="btn-start-game" onclick="startT3()">スタート</button>
+            <div id="msg-t3" class="msg-game"></div>
+        </div>
+
+        <!-- T4 -->
+        <div class="test-container">
+            <div class="test-header">問4. 衝動抑止 (Go/No-Go)</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap" style="position:relative;">
+                    <div class="d-t4-cir-red"></div>
+                    <div class="d-t4-cir-blue"></div>
+                </div>
+                <div class="test-desc">
+                    【目的】「やってはいけない操作」を無意識にやってしまう焦りや、衝動の抑えやすさを測ります。<br>
+                    【操作】<span>「赤色の円」が出た時だけタップ</span>してください。青色は無視します。（制限時間10秒）
+                </div>
+            </div>
+            <div id="t4-area" class="game-area"></div>
+            <button id="btn-t4" class="btn-start-game" style="background:#3b82f6;" onclick="startT4()">スタート</button>
+            <div id="msg-t4" class="msg-game"></div>
+        </div>
+
+        <!-- T5 -->
+        <div class="test-container">
+            <div class="test-header">問5. 死角の速度予測</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap">
+                    <div class="d-t5-tun" style="width:25%; left:30%;">死角1</div>
+                    <div class="d-t5-tun" style="width:20%; left:65%;">死角2</div>
+                    <div class="d-t5-lin" style="left:90%;"></div>
+                    <div class="d-t5-bal"></div>
+                </div>
+                <div class="test-desc">
+                    【目的】交差点などで、見えない位置から来る車のスピードを予測する力を測ります。<br>
+                    【操作】球が死角に入ります。<span>「右端の赤い縦線に重なる瞬間」にSTOPをタップ</span>してください。（全3回）
+                </div>
+            </div>
+            <div id="t5-area" class="game-area">
+                <div style="width:100%; height:8px; background:#cbd5e1; position:absolute; top:75px;"></div>
+                <div class="tunnel" style="width: 25%; left: 30%;">死角1</div>
+                <div class="tunnel" style="width: 20%; left: 65%;">死角2</div>
+                <div class="target-line" style="left: 90%;"></div>
+                <div id="t5-obj" class="moving-obj" style="left: 0%;"></div>
+            </div>
+            <button id="btn-t5" class="btn-start-game" onclick="actionT5()">スタート</button>
+            <div id="msg-t5" class="msg-game"></div>
+        </div>
+
+        <!-- T6 -->
+        <div class="test-container">
+            <div class="test-header">問6. 状況判断（パニック耐性）</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap" style="flex-direction:column; align-items:center;">
+                    <div class="d-t6-r" style="color:#ef4444; font-weight:bold; font-size:11px; height:15px; margin-bottom:5px;"></div>
+                    <div class="d-t6-t" style="font-size:30px; font-weight:bold; color:#1e293b;"></div>
+                </div>
+                <div class="test-desc">
+                    【目的】想定外の事態が起きた時に、パニックにならず冷静に正しい操作ができるかを測ります。<br>
+                    【操作】矢印の方向を押します。ただし<span>【反転】と出た時だけは「逆」の方向</span>を押してください。
+                </div>
+            </div>
+            <div class="game-area" style="flex-direction:column;">
+                <div id="t6-rule" style="color:#ef4444; font-weight:bold; display:none; margin-bottom:5px;">【反転】逆を押せ！</div>
+                <div id="t6-arrow" style="font-size:50px; font-weight:bold;">▶</div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn-start-game" style="margin:0; width:90px; background:#3b82f6;" onclick="actT6('L')">◀左</button>
+                    <button class="btn-start-game" style="margin:0; width:90px; background:#ef4444;" onclick="actT6('R')">右▶</button>
+                </div>
+            </div>
+            <button id="btn-t6" class="btn-start-game" style="background:#1e293b;" onclick="startT6()">スタート</button>
+            <div id="msg-t6" class="msg-game"></div>
+        </div>
+        
+        <!-- T7 -->
+        <div class="test-container">
+            <div class="test-header">問7. 危険回避（周辺視野・ハンドル操作）</div>
+            <div class="tutorial-box">
+                <div class="demo-wrap">
+                    <div class="d-t7-obs" style="left:30%;"></div><div class="d-t7-obs" style="left:70%; animation-delay:1s;"></div>
+                    <div class="d-t7-pla"></div>
+                </div>
+                <div class="test-desc">
+                    【目的】運転中のハンドル操作と、複数の危険な落下物を同時に避ける周辺視野の広さを測ります。<br>
+                    【操作】「左へ」「右へ」ボタンを<span>長押し</span>して赤い障害物を避け続けてください。（制限時間10秒）
+                </div>
+            </div>
+            <div id="t7-area">
+                <div id="t7-player" class="t7-player-car">自機</div>
+            </div>
+            <div style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
+                <button class="btn-start-game" style="margin:0; width:90px; background:#3b82f6;" onmousedown="ctrlT7(-5)" onmouseup="ctrlT7(0)" ontouchstart="ctrlT7(-5)" ontouchend="ctrlT7(0)">◀左へ</button>
+                <button class="btn-start-game" style="margin:0; width:90px; background:#ef4444;" onmousedown="ctrlT7(5)" onmouseup="ctrlT7(0)" ontouchstart="ctrlT7(5)" ontouchend="ctrlT7(0)">右へ▶</button>
+            </div>
+            <button id="btn-t7" class="btn-start-game" style="background:#1e293b; margin-top:15px;" onclick="startT7()">スタート</button>
+            <div id="msg-t7" class="msg-game"></div>
+        </div>
     </div>
 
-    <!-- メインコンテンツ（合言葉入力後に表示） -->
-    <div id="main-content">
-        <h1>WEB運転適性検査</h1>
-        <p style="text-align:center; font-weight:bold; color:#3b82f6;">受験番号: <span id="display-userId"></span></p>
+    <!-- Step 2: 心理テスト -->
+    <div class="step-title"><span class="step-badge">Step.2</span><span class="step-text">日常行動・心理テスト（全30問）</span></div>
+    <p style="font-size:12px; color:#ef4444; font-weight:bold; text-align:center; margin-bottom:10px;">※直感で素直に回答してください。</p>
+    <div class="q-list-container" id="quiz-form"></div>
 
-        <!-- Step 1 (実地テスト) -->
-        <div class="step-title"><span class="step-badge">Step.1</span><span class="step-text">実地テスト（全7問）</span></div>
-        
-        <div class="test-list">
-            <!-- T1 -->
-            <div class="test-container">
-                <div class="test-header">問1. 情報処理スピード</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap" style="flex-direction:column; background:transparent; border:none; height:auto;">
-                        <div style="width:40px; height:40px; border:2px solid #475569; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:1px; margin:0 auto 5px; background:#fff;">
-                            <div class="d-t1-obj"></div><div class="d-t1-obj"></div><div class="d-t1-obj"></div>
-                        </div>
-                        <div style="display:flex; justify-content:center; gap:5px;">
-                            <div style="border:1px solid #cbd5e1; width:25px; height:25px; display:flex; align-items:center; justify-content:center; background:#fff;"><div style="width:6px; height:6px; background:#2563eb;"></div></div>
-                            <div style="border:2px solid #ef4444; width:25px; height:25px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; background:#fee2e2;">
-                                <div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div>
-                            </div>
-                            <div style="border:1px solid #cbd5e1; width:25px; height:25px; display:flex; align-items:center; justify-content:center; background:#fff;"><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div><div style="width:5px; height:5px; background:#2563eb; margin:1px;"></div></div>
-                        </div>
-                    </div>
-                    <div class="test-desc">
-                        【目的】運転中に必要な標識や情報を、どれだけ素早く正確に処理できるかを測ります。<br>
-                        【操作】上部に出題される「見本」と同じ数の図形が入っているパネルを、<span>下の4つの選択肢の中から直接タップ</span>してください。（制限時間15秒）
-                    </div>
-                </div>
-                <div class="game-area" style="flex-direction: column; justify-content: flex-start; padding-top: 15px;">
-                    <div style="width: 100%; max-width: 320px; position: relative; display: flex; justify-content: center; align-items: center; margin: 0 auto 12px;">
-                        <div class="sample-box" id="t1-sample"></div>
-                        <div id="t1-timer-box" style="position: absolute; right: 0; font-size: 13px; font-weight: bold; color: #ef4444; display: none; background: #fee2e2; padding: 4px 8px; border-radius: 8px; border: 2px solid #ef4444; text-align: center;">残り<br><span id="t1-sec" style="font-size:16px;">15</span>秒</div>
-                    </div>
-                    <div class="options-grid" id="t1-opts"></div>
-                </div>
-                <button id="btn-t1" class="btn-start-game" onclick="startT1()">スタート</button>
-                <div id="msg-t1" class="msg-game"></div>
-            </div>
+    <button id="btn-result" class="btn-main" onclick="generateReport()">総合診断結果を出力する</button>
 
-            <!-- T2 -->
-            <div class="test-container">
-                <div class="test-header">問2. 空間把握（車幅・隙間感覚）</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap">
-                        <div class="d-t2-obs" style="left:15%;"></div><div class="d-t2-obs" style="right:15%;"></div>
-                        <div class="d-t2-cir"></div>
-                    </div>
-                    <div class="test-desc">
-                        【目的】狭い道でのすれ違いや駐車時に必要な、車幅感覚と距離感を測ります。<br>
-                        【操作】「スタート」を押すと青い円が大きくなります。<span>「2つの障害物の間をギリギリ通れるサイズ」で「STOP」をタップ</span>してください。（全3回）
-                    </div>
-                </div>
-                <div id="t2-area">
-                    <div class="obs-circle" id="t2-obs1" style="width:60px; height:60px; left:20px; top:50px;">障害</div>
-                    <div class="obs-circle" id="t2-obs2" style="width:80px; height:80px; left:200px; top:20px;">障害</div>
-                    <div id="t2-circle" class="growing-circle-t2" style="left:140px; top:90px; width:0; height:0;"></div>
-                </div>
-                <button id="btn-t2" class="btn-start-game" style="background:#3b82f6;" onclick="actionT2()">スタート</button>
-                <div id="msg-t2" class="msg-game"></div>
+    <!-- レポートエリア -->
+    <div id="result-area">
+        <div id="warning-card" class="warning-card">
+            <div class="warning-header">⚠️ あなたが最も起こしやすい事故と想定損害額</div>
+            <div class="warning-img-container">
+                <img id="warning-img-elem" src="" alt="事故現場写真">
+                <div id="warning-img-text" class="img-text">判定中...</div>
             </div>
-
-            <!-- T3 -->
-            <div class="test-container">
-                <div class="test-header">問3. 反射神経</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap"><div class="d-t3-box">タップ！</div></div>
-                    <div class="test-desc">
-                        【目的】前車の急ブレーキや飛び出しに対して、瞬時に反応できるかを測ります。<br>
-                        【操作】下のグレーの枠が<span>「赤色（タップ！）」に変わった瞬間に素早くタップ</span>してください。
-                    </div>
-                </div>
-                <div id="t3-area" class="game-area" style="background:#94a3b8; color:white; font-weight:bold; font-size:20px; cursor:pointer;" onclick="actT3()">待機</div>
-                <button id="btn-t3" class="btn-start-game" onclick="startT3()">スタート</button>
-                <div id="msg-t3" class="msg-game"></div>
-            </div>
-
-            <!-- T4 -->
-            <div class="test-container">
-                <div class="test-header">問4. 衝動抑止 (Go/No-Go)</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap" style="position:relative;">
-                        <div class="d-t4-cir-red"></div>
-                        <div class="d-t4-cir-blue"></div>
-                    </div>
-                    <div class="test-desc">
-                        【目的】「やってはいけない操作」を無意識にやってしまう焦りや、衝動の抑えやすさを測ります。<br>
-                        【操作】<span>「赤色の円」が出た時だけタップ</span>してください。青色は無視します。（制限時間10秒）
-                    </div>
-                </div>
-                <div id="t4-area" class="game-area"></div>
-                <button id="btn-t4" class="btn-start-game" style="background:#3b82f6;" onclick="startT4()">スタート</button>
-                <div id="msg-t4" class="msg-game"></div>
-            </div>
-
-            <!-- T5 -->
-            <div class="test-container">
-                <div class="test-header">問5. 死角の速度予測</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap">
-                        <div class="d-t5-tun" style="width:25%; left:30%;">死角1</div>
-                        <div class="d-t5-tun" style="width:20%; left:65%;">死角2</div>
-                        <div class="d-t5-lin" style="left:90%;"></div>
-                        <div class="d-t5-bal"></div>
-                    </div>
-                    <div class="test-desc">
-                        【目的】交差点などで、見えない位置から来る車のスピードを予測する力を測ります。<br>
-                        【操作】球が死角に入ります。<span>「右端の赤い縦線に重なる瞬間」にSTOPをタップ</span>してください。（全3回）
-                    </div>
-                </div>
-                <div id="t5-area" class="game-area">
-                    <div style="width:100%; height:8px; background:#cbd5e1; position:absolute; top:75px;"></div>
-                    <div class="tunnel" style="width: 25%; left: 30%;">死角1</div>
-                    <div class="tunnel" style="width: 20%; left: 65%;">死角2</div>
-                    <div class="target-line" style="left: 90%;"></div>
-                    <div id="t5-obj" class="moving-obj" style="left: 0%;"></div>
-                </div>
-                <button id="btn-t5" class="btn-start-game" onclick="actionT5()">スタート</button>
-                <div id="msg-t5" class="msg-game"></div>
-            </div>
-
-            <!-- T6 -->
-            <div class="test-container">
-                <div class="test-header">問6. 状況判断（パニック耐性）</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap" style="flex-direction:column; align-items:center;">
-                        <div class="d-t6-r" style="color:#ef4444; font-weight:bold; font-size:11px; height:15px; margin-bottom:5px;"></div>
-                        <div class="d-t6-t" style="font-size:30px; font-weight:bold; color:#1e293b;"></div>
-                    </div>
-                    <div class="test-desc">
-                        【目的】想定外の事態が起きた時に、パニックにならず冷静に正しい操作ができるかを測ります。<br>
-                        【操作】矢印の方向を押します。ただし<span>【反転】と出た時だけは「逆」の方向</span>を押してください。
-                    </div>
-                </div>
-                <div class="game-area" style="flex-direction:column;">
-                    <div id="t6-rule" style="color:#ef4444; font-weight:bold; display:none; margin-bottom:5px;">【反転】逆を押せ！</div>
-                    <div id="t6-arrow" style="font-size:50px; font-weight:bold;">▶</div>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <button class="btn-start-game" style="margin:0; width:90px; background:#3b82f6;" onclick="actT6('L')">◀左</button>
-                        <button class="btn-start-game" style="margin:0; width:90px; background:#ef4444;" onclick="actT6('R')">右▶</button>
-                    </div>
-                </div>
-                <button id="btn-t6" class="btn-start-game" style="background:#1e293b;" onclick="startT6()">スタート</button>
-                <div id="msg-t6" class="msg-game"></div>
-            </div>
-            
-            <!-- T7 -->
-            <div class="test-container">
-                <div class="test-header">問7. 危険回避（周辺視野・ハンドル操作）</div>
-                <div class="tutorial-box">
-                    <div class="demo-wrap">
-                        <div class="d-t7-obs" style="left:30%;"></div><div class="d-t7-obs" style="left:70%; animation-delay:1s;"></div>
-                        <div class="d-t7-pla"></div>
-                    </div>
-                    <div class="test-desc">
-                        【目的】運転中のハンドル操作と、複数の危険な落下物を同時に避ける周辺視野の広さを測ります。<br>
-                        【操作】「左へ」「右へ」ボタンを<span>長押し</span>して赤い障害物を避け続けてください。（制限時間10秒）
-                    </div>
-                </div>
-                <div id="t7-area">
-                    <div id="t7-player" class="t7-player-car">自機</div>
-                </div>
-                <div style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
-                    <button class="btn-start-game" style="margin:0; width:90px; background:#3b82f6;" onmousedown="ctrlT7(-5)" onmouseup="ctrlT7(0)" ontouchstart="ctrlT7(-5)" ontouchend="ctrlT7(0)">◀左へ</button>
-                    <button class="btn-start-game" style="margin:0; width:90px; background:#ef4444;" onmousedown="ctrlT7(5)" onmouseup="ctrlT7(0)" ontouchstart="ctrlT7(5)" ontouchend="ctrlT7(0)">右へ▶</button>
-                </div>
-                <button id="btn-t7" class="btn-start-game" style="background:#1e293b; margin-top:15px;" onclick="startT7()">スタート</button>
-                <div id="msg-t7" class="msg-game"></div>
-            </div>
+            <div id="warning-desc" class="warning-desc"></div>
         </div>
 
-        <!-- Step 2: 心理テスト -->
-        <div class="step-title"><span class="step-badge">Step.2</span><span class="step-text">日常行動・心理テスト（全30問）</span></div>
-        <p style="font-size:12px; color:#ef4444; font-weight:bold; text-align:center; margin-bottom:10px;">※直感で素直に回答してください。</p>
-        <div class="q-list-container" id="quiz-form"></div>
-
-        <button id="btn-result" class="btn-main" onclick="generateReport()">総合診断結果を出力する</button>
-
-        <!-- レポートエリア -->
-        <div id="result-area">
-            <div id="warning-card" class="warning-card">
-                <div class="warning-header">⚠️ あなたが最も起こしやすい事故と想定損害額</div>
-                <div class="warning-img-container">
-                    <img id="warning-img-elem" src="" alt="事故現場写真">
-                    <div id="warning-img-text" class="img-text">判定中...</div>
-                </div>
-                <div id="warning-desc" class="warning-desc"></div>
-            </div>
-
-            <div class="report-grid">
-                <div class="report-card">
-                    <div class="report-header" style="background:#3b82f6;">■ 能力適性（実地テスト結果）</div>
-                    <div class="chart-box" style="height: 250px;"><canvas id="chartAbility"></canvas></div>
-                    <table class="score-table">
-                        <tr><th>判断の速さ</th><td class="desc">情報を素早く処理する力</td><td class="score" id="s-abi-1">-</td></tr>
-                        <tr><th>正確性・緻密性</th><td class="desc">ミスなく確実に行動する力</td><td class="score" id="s-abi-2">-</td></tr>
-                        <tr><th>空間把握力</th><td class="desc">距離や速度を正確に測る力</td><td class="score" id="s-abi-3">-</td></tr>
-                        <tr><th>状況の予測力</th><td class="desc">先の動きを予測する力</td><td class="score" id="s-abi-4">-</td></tr>
-                        <tr><th>落ち着いた行動</th><td class="desc">衝動を抑え冷静に行動する力</td><td class="score" id="s-abi-5">-</td></tr>
-                    </table>
-                </div>
-
-                <div class="report-card">
-                    <div class="report-header" style="background:#10b981;">■ 性格適性（心理テスト結果）</div>
-                    <div class="chart-box" style="height: 250px;"><canvas id="chartPersonality"></canvas></div>
-                    <table class="score-table">
-                        <tr><th>情緒の安定性</th><td class="desc">イライラせず平常心を保つ</td><td class="score" id="s-per-1">-</td></tr>
-                        <tr><th>衝動抑止力</th><td class="desc">先を急がず自制する性格</td><td class="score" id="s-per-2">-</td></tr>
-                        <tr><th>ルール遵守姿勢</th><td class="desc">規則を正しく守る性格</td><td class="score" id="s-per-3">-</td></tr>
-                        <tr><th>他者への配慮</th><td class="desc">周囲に譲り合う性格</td><td class="score" id="s-per-4">-</td></tr>
-                        <tr><th>過信のなさ</th><td class="desc">技術を過信せず慎重な性格</td><td class="score" id="s-per-5">-</td></tr>
-                    </table>
-                </div>
+        <div class="report-grid">
+            <div class="report-card">
+                <div class="report-header" style="background:#3b82f6;">■ 能力適性（実地テスト結果）</div>
+                <div class="chart-box" style="height: 250px;"><canvas id="chartAbility"></canvas></div>
+                <table class="score-table">
+                    <tr><th>判断の速さ</th><td class="desc">情報を素早く処理する力</td><td class="score" id="s-abi-1">-</td></tr>
+                    <tr><th>正確性・緻密性</th><td class="desc">ミスなく確実に行動する力</td><td class="score" id="s-abi-2">-</td></tr>
+                    <tr><th>空間把握力</th><td class="desc">距離や速度を正確に測る力</td><td class="score" id="s-abi-3">-</td></tr>
+                    <tr><th>状況の予測力</th><td class="desc">先の動きを予測する力</td><td class="score" id="s-abi-4">-</td></tr>
+                    <tr><th>落ち着いた行動</th><td class="desc">衝動を抑え冷静に行動する力</td><td class="score" id="s-abi-5">-</td></tr>
+                </table>
             </div>
 
             <div class="report-card">
-                <div class="report-header" style="background:#1e293b;">■ 総合評価（16マスマトリクス分析）</div>
-                <div class="matrix-container">
-                    <table class="matrix-table">
-                        <tr><td rowspan="5" style="border:none; width:20px; writing-mode:vertical-rl;">▲性格適性▼</td><th style="border:none;"></th><th colspan="4" style="border:none; border-bottom:2px solid #cbd5e1;">◀ 能力適性 ▶</th></tr>
-                        <tr><th style="border-right:2px solid #cbd5e1;">S(優)</th><td id="cell-SS"></td><td id="cell-SA"></td><td id="cell-SB"></td><td id="cell-SC"></td></tr>
-                        <tr><th style="border-right:2px solid #cbd5e1;">A(良)</th><td id="cell-AS"></td><td id="cell-AA"></td><td id="cell-AB"></td><td id="cell-AC"></td></tr>
-                        <tr><th style="border-right:2px solid #cbd5e1;">B(可)</th><td id="cell-BS"></td><td id="cell-BA"></td><td id="cell-BB"></td><td id="cell-BC"></td></tr>
-                        <tr><th style="border-right:2px solid #cbd5e1;">C(注)</th><td id="cell-CS"></td><td id="cell-CA"></td><td id="cell-CB"></td><td id="cell-CC"></td></tr>
-                        <tr><td colspan="2" style="border:none;"></td><th style="border-top:2px solid #cbd5e1;">S(優)</th><th style="border-top:2px solid #cbd5e1;">A(良)</th><th style="border-top:2px solid #cbd5e1;">B(可)</th><th style="border-top:2px solid #cbd5e1;">C(注)</th></tr>
-                    </table>
-                </div>
-                <div class="eval-text" id="comprehensive-text"></div>
+                <div class="report-header" style="background:#10b981;">■ 性格適性（心理テスト結果）</div>
+                <div class="chart-box" style="height: 250px;"><canvas id="chartPersonality"></canvas></div>
+                <table class="score-table">
+                    <tr><th>情緒の安定性</th><td class="desc">イライラせず平常心を保つ</td><td class="score" id="s-per-1">-</td></tr>
+                    <tr><th>衝動抑止力</th><td class="desc">先を急がず自制する性格</td><td class="score" id="s-per-2">-</td></tr>
+                    <tr><th>ルール遵守姿勢</th><td class="desc">規則を正しく守る性格</td><td class="score" id="s-per-3">-</td></tr>
+                    <tr><th>他者への配慮</th><td class="desc">周囲に譲り合う性格</td><td class="score" id="s-per-4">-</td></tr>
+                    <tr><th>過信のなさ</th><td class="desc">技術を過信せず慎重な性格</td><td class="score" id="s-per-5">-</td></tr>
+                </table>
             </div>
-            
-            <!-- メール送信ボタン -->
-            <button class="btn-send" onclick="sendResultMail()">結果を本部へ送信する（メール起動）</button>
         </div>
+
+        <div class="report-card">
+            <div class="report-header" style="background:#1e293b;">■ 総合評価（16マスマトリクス分析）</div>
+            <div class="matrix-container">
+                <table class="matrix-table">
+                    <tr><td rowspan="5" style="border:none; width:20px; writing-mode:vertical-rl;">▲性格適性▼</td><th style="border:none;"></th><th colspan="4" style="border:none; border-bottom:2px solid #cbd5e1;">◀ 能力適性 ▶</th></tr>
+                    <tr><th style="border-right:2px solid #cbd5e1;">S(優)</th><td id="cell-SS"></td><td id="cell-SA"></td><td id="cell-SB"></td><td id="cell-SC"></td></tr>
+                    <tr><th style="border-right:2px solid #cbd5e1;">A(良)</th><td id="cell-AS"></td><td id="cell-AA"></td><td id="cell-AB"></td><td id="cell-AC"></td></tr>
+                    <tr><th style="border-right:2px solid #cbd5e1;">B(可)</th><td id="cell-BS"></td><td id="cell-BA"></td><td id="cell-BB"></td><td id="cell-BC"></td></tr>
+                    <tr><th style="border-right:2px solid #cbd5e1;">C(注)</th><td id="cell-CS"></td><td id="cell-CA"></td><td id="cell-CB"></td><td id="cell-CC"></td></tr>
+                    <tr><td colspan="2" style="border:none;"></td><th style="border-top:2px solid #cbd5e1;">S(優)</th><th style="border-top:2px solid #cbd5e1;">A(良)</th><th style="border-top:2px solid #cbd5e1;">B(可)</th><th style="border-top:2px solid #cbd5e1;">C(注)</th></tr>
+                </table>
+            </div>
+            <div class="eval-text" id="comprehensive-text"></div>
+        </div>
+        
+        <!-- メール送信ボタン -->
+        <button class="btn-send" onclick="sendResultMail()">結果を本部へ送信する（メール起動）</button>
     </div>
 </div>
 
 <script>
-    // --- ログイン処理 ---
-    const CORRECT_PASSCODE = "2026";
-    const EMAIL_ADDRESS = "system@nikken-example.com"; // 本番用のアドレスに変更してください
-    let currentUserId = "";
-
-    function login() {
-        const idInput = document.getElementById('userId').value;
-        const passInput = document.getElementById('passcode').value;
-        if (!idInput) { alert("受験番号を入力してください。"); return; }
-        if (passInput !== CORRECT_PASSCODE) { alert("合言葉が違います。"); return; }
-        
-        currentUserId = idInput;
-        document.getElementById('display-userId').innerText = currentUserId;
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('main-content').style.display = 'block';
-    }
+    // ★ 送信先アドレスの設定 ★
+    const EMAIL_ADDRESS = "a.toriumi@nikken-ts.jp"; // ※ここをご希望のアドレスに変更してください
 
     let s = { t1H:0, t1M:0, t2E:0, t3Rt:999, t4H:0, t4M:0, t5E:0, t6H:0, t6M:0, t7K:0 };
     let tFlags = [0,0,0,0,0,0,0]; 
@@ -602,7 +560,7 @@
     };
 
     let chartAbi = null, chartPer = null;
-    let globalLvlAbi = "", globalLvlPer = "", globalWorstAbiName = "", globalWorstPerName = ""; // メール配信用
+    let globalLvlAbi = "", globalLvlPer = "", globalWorstAbiName = "", globalWorstPerName = "";
 
     function generateReport() {
         let qScores = [];
@@ -673,16 +631,32 @@
         let activeCell = document.getElementById('cell-' + lvlPer + lvlAbi);
         activeCell.className = 'active-cell'; activeCell.innerText = '〇';
 
-        let compText = "";
-        if ((lvlAbi === 'C' || lvlAbi === 'B') && (lvlPer === 'C' || lvlPer === 'B')) {
-            compText = "<strong>【事故危険度：極めて高い (パニック・暴走タイプ)】</strong><br><br>能力面と性格面の両方において、事故に直結する非常に高いリスクがみられます。";
-        } else if ((lvlAbi === 'C' || lvlAbi === 'B') && (lvlPer === 'S' || lvlPer === 'A')) {
-            compText = "<strong>【事故危険度：中 (パニック・もらい事故タイプ)】</strong><br><br>ルールをしっかり守り、他者への譲り合いの精神を持つ非常に優良な性格適性を備えています。<br>しかし、とっさの判断や空間把握、危険予測などの「運転における基礎能力」には苦手意識や遅れが見られます。";
-        } else if ((lvlAbi === 'S' || lvlAbi === 'A') && (lvlPer === 'C' || lvlPer === 'B')) {
-            compText = "<strong>【事故危険度：高 (過信・自己中心タイプ)】</strong><br><br>判断スピードや動作の正確性、空間把握など、車の操作そのものに関する能力は非常に優秀です。<br>しかし、感情の起伏が激しく、自分のルールや都合を優先しやすい自己中心的な考えに陥りやすい性格傾向がみられます。";
-        } else if ((lvlAbi === 'S' || lvlAbi === 'A') && (lvlPer === 'S' || lvlPer === 'A')) {
-            compText = "<strong>【事故危険度：低 (優良ドライバー適性)】</strong><br><br>能力面・性格面ともに非常に安定しており、理想的な安全運転適性を備えています。";
-        }
+        // 16マスマトリクス対応：全16パターンの個別診断テキスト
+        const evalMatrix = {
+            'SS': "<strong>【事故危険度：極めて低 (スーパー優良ドライバー)】</strong><br><br>能力・性格ともに最高水準です。高い認知判断力と完璧なセルフコントロールを兼ね備えています。社内の模範ドライバーとして活躍が期待できます。",
+            'SA': "<strong>【事故危険度：低 (優秀・慎重型)】</strong><br><br>非常に高い運転能力に加え、高い安全意識を持っています。判断が的確で、どのような道路状況でも冷静に対応できる安定感があります。",
+            'SB': "<strong>【事故危険度：低 (優秀・マイペース型)】</strong><br><br>卓越した運転能力を持ち、基本動作に優れています。ごく稀にマイペースさが出る場合がありますが、高い能力で十分にカバーできています。",
+            'SC': "<strong>【事故危険度：中 (天才肌・過信注意型)】</strong><br><br>能力は抜群に高いですが、性格面で少し雑さや油断が出やすいタイプです。「自分は運転が上手い」という過信から生じる一瞬のスキに注意してください。",
+            
+            'AS': "<strong>【事故危険度：低 (見本的・安全第一型)】</strong><br><br>ルール遵守意識と他者への配慮が抜群に優れています。能力面も良好で、予測運転と譲り合いの精神を兼ね備えた非常に安心感のあるドライバーです。",
+            'AA': "<strong>【事故危険度：低 (標準・バランス優良型)】</strong><br><br>能力・性格ともに平均以上の高水準でバランスが取れています。重大事故を起こすリスクが低く、日常業務を安心して任せられる適性です。",
+            'AB': "<strong>【事故危険度：中 (標準・やや先急ぎ型)】</strong><br><br>運転技術は十分ですが、急いでいる時や疲れている時に少し焦りが出やすい傾向があります。時間に余裕を持った運行計画を意識しましょう。",
+            'AC': "<strong>【事故危険度：高 (技術依存・強気型)】</strong><br><br>十分な運転スピードや対応力を持っていますが、ルール軽視や強引な割り込みをしがちな面があります。技術に頼らず、交通マナーの徹底が必要です。",
+            
+            'BS': "<strong>【事故危険度：中 (慎重・カバー型)】</strong><br><br>とっさの判断や空間把握にやや苦手意識がありますが、抜群の安全意識と慎重さでそれをカバーしています。今の慎重な姿勢を絶対に崩さないでください。",
+            'BA': "<strong>【事故危険度：中 (標準・努力型)】</strong><br><br>平均的な運転能力を持ち、安全に対する意識も良好です。体調不良や悪天候時など、悪条件が重なった際の慎重な判断を心がけることでリスクを抑えられます。",
+            'BB': "<strong>【事故危険度：中 (注意・うっかり型)】</strong><br><br>能力・性格ともに平均〜やや注意ラインです。慣れた道での「漫然運転」や「思い込み確認」によるうっかり事故に注意が必要です。声出し確認を徹底しましょう。",
+            'BC': "<strong>【事故危険度：高 (焦り・自損事故リスク型)】</strong><br><br>判断の遅れや操作ミスが起きやすい傾向がある上に、イライラや焦りが加わりやすい状態です。駐車時の擦り事故やバック時の確認不足に十分注意してください。",
+            
+            'CS': "<strong>【事故危険度：中 (不器用・超安全志向型)】</strong><br><br>反射神経や空間把握に苦手さが見られますが、本人がそれを自覚し、非常に慎重に運転しています。焦らされる場面でも自分のペースを保つことが大切です。",
+            'CA': "<strong>【事故危険度：高 (パニック・もらい事故型)】</strong><br><br>安全意識は高いものの、複雑な交差点や予期せぬ飛び出しに対する処理速度が遅れがちです。周囲のペースに惑わされず、早めのブレーキと停止を意識してください。",
+            'CB': "<strong>【事故危険度：極めて高 (過信・認知遅れ型)】</strong><br><br>とっさの状況判断に遅れが生じやすい一方で、性格的にも少し大雑把な面が見られます。「かもしれない運転」を徹底し、車間距離を通常の2倍取ってください。",
+            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点候での重点的な安全指導が必要です。"
+        };
+
+        let matrixKey = lvlPer + lvlAbi;
+        let compText = evalMatrix[matrixKey] || "<strong>【判定中】</strong><br><br>診断結果を集計中です。";
+        
         document.getElementById('comprehensive-text').innerHTML = compText;
 
         let abiScores = [ {id: 1, name: "とっさの判断の遅れ", score: a1, desc: "とっさの認知・判断が遅れがちな"}, {id: 2, name: "注意力散漫（わき見）", score: a2, desc: "複数のことに気を配るのが苦手でわき見をしやすい"}, {id: 3, name: "空間・距離感の誤認", score: a3, desc: "死角の距離感や車幅感覚を誤認しやすい"}, {id: 4, name: "危険予測の甘さ", score: a4, desc: "「かもしれない運転」が苦手で危険予測が甘い"}, {id: 5, name: "パニック・操作ミス", score: a5, desc: "想定外の事態で慌ててしまい操作を誤りやすい"} ];
@@ -711,12 +685,11 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ GAS通信を削除し、スマホのメールアプリ(mailto)を起動する処理に変更 ★
+    // ★ メール送信処理 ★
     function sendResultMail() {
-        const subject = encodeURIComponent("【運転適性検査 完了報告】受験番号: " + currentUserId);
+        const subject = encodeURIComponent("【運転適性検査 完了報告】");
         const body = encodeURIComponent(
             "適性検査が完了しました。\n\n" +
-            "【受験番号】 " + currentUserId + "\n" +
             "【能力ランク】 " + globalLvlAbi + "\n" +
             "【性格ランク】 " + globalLvlPer + "\n" +
             "【最大弱点】 " + globalWorstAbiName + " / " + globalWorstPerName + "\n\n" +
