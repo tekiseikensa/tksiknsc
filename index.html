@@ -14,6 +14,13 @@
     .step-badge { background-color: #f59e0b; color: #fff; font-weight: bold; padding: 4px 12px; border-radius: 20px; margin-right: 12px; font-size: 14px; }
     .step-text { font-size: 16px; font-weight: bold; color: #1e293b; }
 
+    /* 氏名入力フォーム */
+    .name-form-box { background: #f8fafc; border: 2px solid #3b82f6; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+    .name-inputs { display: flex; gap: 10px; margin-top: 8px; }
+    .name-inputs div { flex: 1; }
+    .name-inputs label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 3px; }
+    .name-inputs input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+
     /* 実地テスト共通 */
     .test-list { display: flex; flex-direction: column; gap: 20px; }
     .test-container { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding-bottom: 15px;}
@@ -39,7 +46,7 @@
     .d-t4-cir-red { width:26px; height:26px; border-radius:50%; background:#ef4444; border:2px solid #b91c1c; position:absolute; left:20%; top:25%; animation: d-t4-flash-red 2.4s infinite; }
     .d-t4-cir-blue { width:26px; height:26px; border-radius:50%; background:#3b82f6; border:2px solid #1d4ed8; position:absolute; left:65%; top:40%; animation: d-t4-flash-blue 2.4s infinite 1.2s; }
     @keyframes d-t4-flash-red { 0%, 40% { opacity: 1; transform: scale(1); } 45%, 100% { opacity: 0; transform: scale(0.8); } }
-    @keyframes d-t4-flash-blue { 0%, 40% { opacity: 1; transform: scale(1); } 45%, 100% { opacity: 0; transform: scale(0.8); } }
+    @keyframes d-t4-flash-blue { 0%, 40% { opacity: 1; transform: scale(0.8); } }
 
     .d-t5-tun { height:25px; background:#475569; position:absolute; z-index:2; color:white; font-size:10px; display:flex; align-items:center; justify-content:center;}
     .d-t5-bal { width:12px; height:12px; background:#f59e0b; border-radius:50%; position:absolute; z-index:1; animation: d-t5 2.5s infinite linear; }
@@ -131,6 +138,21 @@
 
 <div class="container">
     <h1>WEB運転適性検査</h1>
+
+    <!-- 氏名入力ボックス -->
+    <div class="name-form-box">
+        <div style="font-weight: bold; color: #1e293b; font-size: 14px;">受検者のお名前を入力してください</div>
+        <div class="name-inputs">
+            <div>
+                <label>姓</label>
+                <input type="text" id="emp-last-name" placeholder="例：日研">
+            </div>
+            <div>
+                <label>名</label>
+                <input type="text" id="emp-first-name" placeholder="例：太郎">
+            </div>
+        </div>
+    </div>
 
     <!-- Step 1 (実地テスト) -->
     <div class="step-title"><span class="step-badge">Step.1</span><span class="step-text">実地テスト（全7問）</span></div>
@@ -563,6 +585,9 @@
     let globalLvlAbi = "", globalLvlPer = "", globalWorstAbiName = "", globalWorstPerName = "";
 
     function generateReport() {
+        let lastName = document.getElementById('emp-last-name').value.trim();
+        let firstName = document.getElementById('emp-first-name').value.trim();
+
         let qScores = [];
         for(let i=0; i<30; i++) {
             let el = document.querySelector('input[name="q' + i + '"]:checked');
@@ -570,10 +595,12 @@
         }
 
         let missing = [];
+        if (!lastName || !firstName) { missing.push("・受検者のお名前（姓・名）"); }
+
         let missingTests = [];
         for (let i = 0; i < 7; i++) { if (tFlags[i] === 0) missingTests.push("問" + (i + 1)); }
         if (missingTests.length > 0) { missing.push("・未完了の実地テスト: " + missingTests.join(", ")); }
-        if (qScores.length < 30) { missing.push('・心理テストの未回答 (' + (30 - qScores.length) + '問分)'); }
+        if (qScores.length < 30) { missing.push('・心理テストの未回答 (' + (30 - qScores.length) + '问分)'); }
 
         if (missing.length > 0) { alert("【入力・実施漏れがあります】\n\n" + missing.join("\n") + "\n\nすべての項目を完了してください。"); return; }
 
@@ -651,7 +678,7 @@
             'CS': "<strong>【事故危険度：中 (不器用・超安全志向型)】</strong><br><br>反射神経や空間把握に苦手さが見られますが、本人がそれを自覚し、非常に慎重に運転しています。焦らされる場面でも自分のペースを保つことが大切です。",
             'CA': "<strong>【事故危険度：高 (パニック・もらい事故型)】</strong><br><br>安全意識は高いものの、複雑な交差点や予期せぬ飛び出しに対する処理速度が遅れがちです。周囲のペースに惑わされず、早めのブレーキと停止を意識してください。",
             'CB': "<strong>【事故危険度：極めて高 (過信・認知遅れ型)】</strong><br><br>とっさの状況判断に遅れが生じやすい一方で、性格的にも少し大雑把な面が見られます。「かもしれない運転」を徹底し、車間距離を通常の2倍取ってください。",
-            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点候での重点的な安全指導が必要です。"
+            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点呼での重点的な安全指導が必要です。"
         };
 
         let matrixKey = lvlPer + lvlAbi;
@@ -685,11 +712,16 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ メール送信処理 ★
+    // ★ メール送信処理（お名前反映） ★
     function sendResultMail() {
-        const subject = encodeURIComponent("【運転適性検査 完了報告】");
+        let lastName = document.getElementById('emp-last-name').value.trim();
+        let firstName = document.getElementById('emp-first-name').value.trim();
+        let fullName = lastName + " " + firstName;
+
+        const subject = encodeURIComponent("【運転適性検査】" + fullName + " 様");
         const body = encodeURIComponent(
-            "適性検査が完了しました。\n\n" +
+            "運転適性検査の診断結果をお送りします。\n\n" +
+            "【受検者氏名】 " + fullName + " 様\n" +
             "【能力ランク】 " + globalLvlAbi + "\n" +
             "【性格ランク】 " + globalLvlPer + "\n" +
             "【最大弱点】 " + globalWorstAbiName + " / " + globalWorstPerName + "\n\n" +
