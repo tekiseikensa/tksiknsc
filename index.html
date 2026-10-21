@@ -678,36 +678,36 @@
         globalLvlAbi = lvlAbi;
         globalLvlPer = lvlPer;
 
-       if (typeof Chart !== 'undefined') {
-    let dataset1Abi = { label: 'あなたの能力', data: [a1, a2, a3, a4, a5], backgroundColor: 'rgba(59,130,246,0.4)', borderColor: '#3b82f6', borderWidth: 2 };
-    let dataset1Per = { label: 'あなたの性格', data: [p[0], p[1], p[2], p[3], p[4]], backgroundColor: 'rgba(16,185,129,0.4)', borderColor: '#10b981', borderWidth: 2 };
+        // ★ 全体平均を省いたレーダーチャート設定 ★
+        if (typeof Chart !== 'undefined') {
+            let dataset1Abi = { label: 'あなたの能力', data: [a1, a2, a3, a4, a5], backgroundColor: 'rgba(59,130,246,0.4)', borderColor: '#3b82f6', borderWidth: 2 };
+            let dataset1Per = { label: 'あなたの性格', data: [p[0], p[1], p[2], p[3], p[4]], backgroundColor: 'rgba(16,185,129,0.4)', borderColor: '#10b981', borderWidth: 2 };
 
-    let opt = { 
-        scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display:false } } }, 
-        plugins: { legend: { display: false } }, // 凡例（レジェンド）も非表示にしてすっきりさせます
-        maintainAspectRatio: false 
-    };
-    
-    if(chartAbi) chartAbi.destroy();
-    chartAbi = new Chart(document.getElementById('chartAbility').getContext('2d'), { 
-        type: 'radar', 
-        data: { labels: ['判断の速さ', '正確性', '空間把握', '状況予測', '落ち着き'], datasets: [dataset1Abi] }, 
-        options: opt 
-    });
-    
-    if(chartPer) chartPer.destroy();
-    chartPer = new Chart(document.getElementById('chartPersonality').getContext('2d'), { 
-        type: 'radar', 
-        data: { labels: ['情緒安定', '衝動抑止', 'ルール遵守', '他者配慮', '過信のなさ'], datasets: [dataset1Per] }, 
-        options: opt 
-    });
-}
+            let opt = { 
+                scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display:false } } }, 
+                plugins: { legend: { display: false } }, 
+                maintainAspectRatio: false 
+            };
+            
+            if(chartAbi) chartAbi.destroy();
+            chartAbi = new Chart(document.getElementById('chartAbility').getContext('2d'), { 
+                type: 'radar', 
+                data: { labels: ['判断の速さ', '正確性', '空間把握', '状況予測', '落ち着き'], datasets: [dataset1Abi] }, 
+                options: opt 
+            });
+            
+            if(chartPer) chartPer.destroy();
+            chartPer = new Chart(document.getElementById('chartPersonality').getContext('2d'), { 
+                type: 'radar', 
+                data: { labels: ['情緒安定', '衝動抑止', 'ルール遵守', '他者配慮', '過信のなさ'], datasets: [dataset1Per] }, 
+                options: opt 
+            });
+        }
 
         ['SS','SA','SB','SC','AS','AA','AB','AC','BS','BA','BB','BC','CS','CA','CB','CC'].forEach(id => { document.getElementById('cell-'+id).className=''; document.getElementById('cell-'+id).innerText=''; });
         let activeCell = document.getElementById('cell-' + lvlPer + lvlAbi);
         activeCell.className = 'active-cell'; activeCell.innerText = '〇';
 
-        // 16マスマトリクス対応：全16パターンの個別診断テキスト
         const evalMatrix = {
             'SS': "<strong>【事故危険度：極めて低 (スーパー優良ドライバー)】</strong><br><br>能力・性格ともに最高水準です。高い認知判断力と完璧なセルフコントロールを兼ね備えています。社内の模範ドライバーとして活躍が期待できます。",
             'SA': "<strong>【事故危険度：低 (優秀・慎重型)】</strong><br><br>非常に高い運転能力に加え、高い安全意識を持っています。判断が的確で、どのような道路状況でも冷静に対応できる安定感があります。",
@@ -747,7 +747,6 @@
         globalWorstAbiName = worstAbi.name;
         globalWorstPerName = worstPer.name;
 
-        // ★ 判定結果（matrixKey）に応じた生成画像のランダム読み込み ★
         let warningCard = document.getElementById('warning-card');
         warningCard.style.display = 'block';
         
@@ -761,21 +760,33 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ メール送信処理（お名前反映） ★
+    // ★ 全13項目を完全フォーマットしたメール送信処理 ★
     function sendResultMail() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
         let fullName = lastName + " " + firstName;
 
-        const subject = encodeURIComponent("【運転適性検査】" + fullName + " 様");
-        const body = encodeURIComponent(
-            "運転適性検査の診断結果をお送りします。\n\n" +
-            "【受検者氏名】 " + fullName + " 様\n" +
-            "【能力ランク】 " + globalLvlAbi + "\n" +
-            "【性格ランク】 " + globalLvlPer + "\n" +
-            "【最大弱点】 " + globalWorstAbiName + " / " + globalWorstPerName + "\n\n" +
-            "※このまま送信ボタンを押してください。"
-        );
+        const subject = encodeURIComponent("【運転適性検査結果】" + fullName + " 様");
+        
+        // シートの全13列項目を正確に抽出・紐付けできる構造でメール作成
+        const mailBody = 
+            "【運転適性検査データ】\n" +
+            "受検者氏名: " + fullName + "\n" +
+            "能力ランク: " + globalLvlAbi + "\n" +
+            "性格ランク: " + globalLvlPer + "\n" +
+            "最重点注意項目: " + globalWorstAbiName + " / " + globalWorstPerName + "\n" +
+            "問1正解: " + s.t1H + "\n" +
+            "問1ミス: " + s.t1M + "\n" +
+            "問2誤差: " + Math.floor(s.t2E / 3) + "\n" +
+            "問3反射: " + s.t3Rt + "\n" +
+            "問4ミス: " + s.t4M + "\n" +
+            "問5誤差: " + (s.t5E / 3).toFixed(1) + "\n" +
+            "問6ミス: " + s.t6M + "\n" +
+            "問7被弾: " + s.t7K + "\n" +
+            "-----------------------------\n" +
+            "※このまま送信ボタンを押してください。";
+
+        const body = encodeURIComponent(mailBody);
         window.location.href = "mailto:" + EMAIL_ADDRESS + "?subject=" + subject + "&body=" + body;
     }
 </script>
