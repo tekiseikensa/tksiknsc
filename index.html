@@ -389,6 +389,9 @@
     // ★ 送信先アドレスの設定 ★
     const EMAIL_ADDRESS = "a.toriumi@nikken-ts.jp";
 
+    // ★ 手順遵守エラー（飛ばし行為・未回答押下の回数）カウント用変数 ★
+    let pceCount = 0;
+
     // --- 16パターンごとの事故画像定義＆ランダム切り替え設定 ---
     const accidentImages = {
         'SS': ['accident_SS1.jpg', 'accident_SS2.jpg', 'accident_SS3.jpg'],
@@ -640,7 +643,12 @@
         if (missingTests.length > 0) { missing.push("・未完了の実地テスト: " + missingTests.join(", ")); }
         if (qScores.length < 30) { missing.push('・心理テストの未回答 (' + (30 - qScores.length) + '問分)'); }
 
-        if (missing.length > 0) { alert("【入力・実施漏れがあります】\n\n" + missing.join("\n") + "\n\nすべての項目を完了してください。"); return; }
+        // 未回答のまま進もうとした場合は、裏で「手順遵守エラー(PCE)」をカウントアップ
+        if (missing.length > 0) { 
+            pceCount++;
+            alert("【入力・実施漏れがあります】\n\n" + missing.join("\n") + "\n\nすべての項目を完了してください。"); 
+            return; 
+        }
 
         let a1 = s.t3Rt < 250 ? 5 : s.t3Rt < 320 ? 4 : s.t3Rt < 420 ? 3 : s.t3Rt < 550 ? 2 : 1; 
         let a2_base = s.t6M + s.t7K;
@@ -678,7 +686,6 @@
         globalLvlAbi = lvlAbi;
         globalLvlPer = lvlPer;
 
-        // ★ レーダーチャート（全体平均を省いた単体表示） ★
         if (typeof Chart !== 'undefined') {
             let dataset1Abi = { label: 'あなたの能力', data: [a1, a2, a3, a4, a5], backgroundColor: 'rgba(59,130,246,0.4)', borderColor: '#3b82f6', borderWidth: 2 };
             let dataset1Per = { label: 'あなたの性格', data: [p[0], p[1], p[2], p[3], p[4]], backgroundColor: 'rgba(16,185,129,0.4)', borderColor: '#10b981', borderWidth: 2 };
@@ -727,7 +734,7 @@
             'CS': "<strong>【事故危険度：中 (不器用・超安全志向型)】</strong><br><br>反射神経や空間把握に苦手さが見られますが、本人がそれを自覚し、非常に慎重に運転しています。焦らされる場面でも自分のペースを保つことが大切です。",
             'CA': "<strong>【事故危険度：高 (パニック・もらい事故型)】</strong><br><br>安全意識は高いものの、複雑な交差点や予期せぬ飛び出しに対する処理速度が遅れがちです。周囲のペースに惑わされず、早めのブレーキと停止を意識してください。",
             'CB': "<strong>【事故危険度：極めて高 (過信・認知遅れ型)】</strong><br><br>とっさの状況判断に遅れが生じやすい一方で、性格的にも少し大雑把な面が見られます。「かもしれない運転」を徹底し、車間距離を通常の2倍取ってください。",
-            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点火での重点的な安全指導が必要です。"
+            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点検での重点的な安全指導が必要です。"
         };
 
         let matrixKey = lvlPer + lvlAbi;
@@ -760,7 +767,7 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ メール送信（GASが正しく解析できる明確なラベル文字列） ★
+    // ★ メール送信（手順遵守エラー pceCount を追加） ★
     function sendResultMail() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
@@ -774,6 +781,7 @@
             "能力ランク: " + globalLvlAbi + "\n" +
             "性格ランク: " + globalLvlPer + "\n" +
             "最重点注意項目: " + globalWorstAbiName + " / " + globalWorstPerName + "\n" +
+            "手順遵守エラー: " + pceCount + "\n" +  // ★ 未回答飛ばし回数(PCE)
             "問1正解: " + s.t1H + "\n" +
             "問1ミス: " + s.t1M + "\n" +
             "問2車幅誤差: " + Math.floor(s.t2E / 3) + "\n" +
