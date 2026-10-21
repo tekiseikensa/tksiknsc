@@ -125,9 +125,9 @@
     .warning-card { background: #fff; border: 3px solid #ef4444; border-radius: 8px; overflow: hidden; margin-bottom: 30px; display: none;}
     .warning-header { background: #ef4444; color: #fff; padding: 15px; font-size: 16px; font-weight: bold; text-align: center; }
     
-    .warning-img-container { width: 100%; height: 220px; background-color: #1e293b; overflow: hidden; position: relative;}
-    .warning-img-container img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
-    .warning-img-container .img-text { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: white; font-size: 18px; font-weight: bold; padding: 15px 10px 10px; box-sizing: border-box; text-align: center;}
+    .warning-img-container { width: 100%; height: 240px; background-color: #1e293b; overflow: hidden; position: relative;}
+    .warning-img-container img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
+    .warning-img-container .img-text { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: white; font-size: 16px; font-weight: bold; padding: 15px 10px 10px; box-sizing: border-box; text-align: center;}
     
     .warning-desc { padding: 20px; font-size: 14px; line-height: 1.6; background-color: #fffaf9;}
     .damage-amount { display: block; background: #fee2e2; color: #b91c1c; font-size: 18px; font-weight: bold; text-align: center; padding: 10px; margin-top: 15px; border-radius: 6px; border: 1px dashed #ef4444;}
@@ -387,7 +387,53 @@
 
 <script>
     // ★ 送信先アドレスの設定 ★
-    const EMAIL_ADDRESS = "a.toriumi@nikken-ts.jp"; // ※ここをご希望のアドレスに変更してください
+    const EMAIL_ADDRESS = "a.toriumi@nikken-ts.jp";
+
+    // --- 16パターンごとの事故画像定義＆ランダム切り替え設定 ---
+    const accidentImages = {
+        'SS': ['accident_SS1.jpg', 'accident_SS2.jpg', 'accident_SS3.jpg'],
+        'SB': ['accident_SB1.jpg', 'accident_SB2.jpg', 'accident_SB3.jpg'],
+        'AS': ['accident_AS1.jpg', 'accident_AS2.jpg', 'accident_AS3.jpg'],
+        'BB': ['accident_BB1.jpg', 'accident_BB2.jpg', 'accident_BB3.jpg'],
+        'CB': ['accident_CB1.jpg', 'accident_CB2.jpg', 'accident_CB3.jpg'],
+        'SA': ['accident_SA1.jpg', 'accident_SA2.jpg'],
+        'SC': ['accident_SC1.jpg', 'accident_SC2.jpg'],
+        'AA': ['accident_AA1.jpg', 'accident_AA2.jpg'],
+        'AB': ['accident_AB1.jpg', 'accident_AB2.jpg'],
+        'AC': ['accident_AC1.jpg', 'accident_AC2.jpg'],
+        'BS': ['accident_BS1.jpg', 'accident_BS2.jpg'],
+        'BA': ['accident_BA1.jpg', 'accident_BA2.jpg'],
+        'BC': ['accident_BC1.jpg', 'accident_BC2.jpg'],
+        'CS': ['accident_CS1.jpg', 'accident_CS2.jpg'],
+        'CA': ['accident_CA1.jpg', 'accident_CA2.jpg'],
+        'CC': ['accident_CC1.jpg', 'accident_CC2.jpg']
+    };
+
+    const accidentTitles = {
+        'SS': '高速道路での前車追突事故',
+        'SA': '山道カーブでの対向車擦れ違い接触',
+        'SB': '駐車場バック時のポール・壁激突',
+        'SC': '雨天スピード出しすぎによるスリップ・ガードレール衝突',
+        'AS': '夜間横断歩道での歩行者飛び出し・急ブレーキ',
+        'AA': '交差点右折時の対向直進車との衝突（右直事故）',
+        'AB': '車線変更・合流時の側面擦り事故',
+        'AC': '狭路での大型バス無理なすれ違い接触',
+        'BS': '住宅街狭路での電柱ガリガリ接触',
+        'BA': '左折時の原付バイク巻き込み事故',
+        'BB': 'わき見・漫然運転による前車への追突',
+        'BC': 'コインパーキング後退時の他車衝突',
+        'CS': '住宅街ブラインド角からの自転車飛び出し',
+        'CA': '停車中タクシーへの追突事故',
+        'CB': '信号無視による大型トラックとの側面衝突',
+        'CC': '店舗ガラスへのアクセル踏み間違い突入'
+    };
+
+    function getRandomAccidentImage(type) {
+        const list = accidentImages[type];
+        if (!list || list.length === 0) return 'images/accident_SS1.jpg';
+        const randomIndex = Math.floor(Math.random() * list.length);
+        return `images/${list[randomIndex]}`;
+    }
 
     let s = { t1H:0, t1M:0, t2E:0, t3Rt:999, t4H:0, t4M:0, t5E:0, t6H:0, t6M:0, t7K:0 };
     let tFlags = [0,0,0,0,0,0,0]; 
@@ -573,14 +619,6 @@
         qContainer.insertAdjacentHTML('beforeend', html);
     });
 
-    const accidentData = {
-        1: { title: "判断遅れによる交差点での接触事故", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Traffic_accident_in_Tokyo.jpg/640px-Traffic_accident_in_Tokyo.jpg", amounts: ["約 45万円"] },
-        2: { title: "わき見運転による低速追突事故", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Car_crash_2.jpg/640px-Car_crash_2.jpg", amounts: ["約 60万円"] },
-        3: { title: "車幅誤認による駐車場での擦り事故", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Car_damage.jpg/640px-Car_damage.jpg", amounts: ["約 30万円"] },
-        4: { title: "予測不足による飛び出し接触事故", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Car_accident_in_Bratislava.jpg/640px-Car_accident_in_Bratislava.jpg", amounts: ["約 85万円"] },
-        5: { title: "パニックによるペダル踏み間違い事故", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Accident_de_voiture.jpg/640px-Accident_de_voiture.jpg", amounts: ["約 120万円"] }
-    };
-
     let chartAbi = null, chartPer = null;
     let globalLvlAbi = "", globalLvlPer = "", globalWorstAbiName = "", globalWorstPerName = "";
 
@@ -600,7 +638,7 @@
         let missingTests = [];
         for (let i = 0; i < 7; i++) { if (tFlags[i] === 0) missingTests.push("問" + (i + 1)); }
         if (missingTests.length > 0) { missing.push("・未完了の実地テスト: " + missingTests.join(", ")); }
-        if (qScores.length < 30) { missing.push('・心理テストの未回答 (' + (30 - qScores.length) + '问分)'); }
+        if (qScores.length < 30) { missing.push('・心理テストの未回答 (' + (30 - qScores.length) + '問分)'); }
 
         if (missing.length > 0) { alert("【入力・実施漏れがあります】\n\n" + missing.join("\n") + "\n\nすべての項目を完了してください。"); return; }
 
@@ -698,15 +736,15 @@
         globalWorstAbiName = worstAbi.name;
         globalWorstPerName = worstPer.name;
 
+        // ★ 判定結果（matrixKey）に応じた生成画像のランダム読み込み ★
         let warningCard = document.getElementById('warning-card');
-        if (worstAbi.score <= 3 || worstPer.score <= 3) {
-            warningCard.style.display = 'block';
-            document.getElementById('warning-img-elem').src = accidentData[worstAbi.id].img;
-            document.getElementById('warning-img-text').innerText = accidentData[worstAbi.id].title;
-            document.getElementById('warning-desc').innerHTML = '<strong style="color:#b91c1c; font-size:16px;">【あなたの事故発生メカニズム】</strong><br>あなたには、<strong>「' + worstAbi.desc + '」</strong>という能力的な傾向と、<strong>「' + worstPer.desc + '」</strong>という性格的な傾向が組み合わさった最大の弱点があります。<br><span class="damage-amount">想定損害賠償額: ' + accidentData[worstAbi.id].amounts[0] + '</span>';
-        } else {
-            warningCard.style.display = 'none';
-        }
+        warningCard.style.display = 'block';
+        
+        let randomImgPath = getRandomAccidentImage(matrixKey);
+        document.getElementById('warning-img-elem').src = randomImgPath;
+        document.getElementById('warning-img-text').innerText = accidentTitles[matrixKey] || "危険な事故リスク発生";
+        
+        document.getElementById('warning-desc').innerHTML = '<strong style="color:#b91c1c; font-size:16px;">【あなたの事故発生メカニズム】</strong><br>あなたには、<strong>「' + worstAbi.desc + '」</strong>という能力的な傾向と、<strong>「' + worstPer.desc + '」</strong>という性格的な傾向が組み合わさった最大の弱点があります。<br><span class="damage-amount">想定損害賠償額: 約 35万〜120万円</span>';
 
         document.getElementById('result-area').style.display = 'block';
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
