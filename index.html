@@ -126,7 +126,7 @@
     .warning-header { background: #ef4444; color: #fff; padding: 15px; font-size: 16px; font-weight: bold; text-align: center; }
     
     .warning-img-container { width: 100%; height: 240px; background-color: #1e293b; overflow: hidden; position: relative;}
-    .warning-img-container img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
+    .warning-img-container img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); display: block;}
     .warning-img-container .img-text { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: white; font-size: 16px; font-weight: bold; padding: 15px 10px 10px; box-sizing: border-box; text-align: center;}
     
     .warning-desc { padding: 20px; font-size: 14px; line-height: 1.6; background-color: #fffaf9;}
@@ -430,9 +430,9 @@
 
     function getRandomAccidentImage(type) {
         const list = accidentImages[type];
-        if (!list || list.length === 0) return 'images/accident_SS1.jpg';
+        if (!list || list.length === 0) return './images/accident_SS1.jpg';
         const randomIndex = Math.floor(Math.random() * list.length);
-        return `images/${list[randomIndex]}`;
+        return `./images/${list[randomIndex]}`;
     }
 
     let s = { t1H:0, t1M:0, t2E:0, t3Rt:999, t4H:0, t4M:0, t5E:0, t6H:0, t6M:0, t7K:0 };
@@ -678,7 +678,7 @@
         globalLvlAbi = lvlAbi;
         globalLvlPer = lvlPer;
 
-        // ★ 全体平均を省いたレーダーチャート設定 ★
+        // ★ レーダーチャート（全体平均を省いた単体表示） ★
         if (typeof Chart !== 'undefined') {
             let dataset1Abi = { label: 'あなたの能力', data: [a1, a2, a3, a4, a5], backgroundColor: 'rgba(59,130,246,0.4)', borderColor: '#3b82f6', borderWidth: 2 };
             let dataset1Per = { label: 'あなたの性格', data: [p[0], p[1], p[2], p[3], p[4]], backgroundColor: 'rgba(16,185,129,0.4)', borderColor: '#10b981', borderWidth: 2 };
@@ -727,7 +727,7 @@
             'CS': "<strong>【事故危険度：中 (不器用・超安全志向型)】</strong><br><br>反射神経や空間把握に苦手さが見られますが、本人がそれを自覚し、非常に慎重に運転しています。焦らされる場面でも自分のペースを保つことが大切です。",
             'CA': "<strong>【事故危険度：高 (パニック・もらい事故型)】</strong><br><br>安全意識は高いものの、複雑な交差点や予期せぬ飛び出しに対する処理速度が遅れがちです。周囲のペースに惑わされず、早めのブレーキと停止を意識してください。",
             'CB': "<strong>【事故危険度：極めて高 (過信・認知遅れ型)】</strong><br><br>とっさの状況判断に遅れが生じやすい一方で、性格的にも少し大雑把な面が見られます。「かもしれない運転」を徹底し、車間距離を通常の2倍取ってください。",
-            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点呼での重点的な安全指導が必要です。"
+            'CC': "<strong>【事故危険度：危険 (要指導・最警戒型)】</strong><br><br>能力面での遅れと、性格面でのイライラ・規則軽視が重なっており、重大事故の発生リスクが極めて高い状態です。乗車前点火での重点的な安全指導が必要です。"
         };
 
         let matrixKey = lvlPer + lvlAbi;
@@ -760,7 +760,7 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ 全13項目を完全フォーマットしたメール送信処理 ★
+    // ★ メール送信（GASが正しく解析できる明確なラベル文字列） ★
     function sendResultMail() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
@@ -768,21 +768,20 @@
 
         const subject = encodeURIComponent("【運転適性検査結果】" + fullName + " 様");
         
-        // シートの全13列項目を正確に抽出・紐付けできる構造でメール作成
         const mailBody = 
-            "【運転適性検査データ】\n" +
+            "【WEB運転適性検査 診断結果データ】\n" +
             "受検者氏名: " + fullName + "\n" +
             "能力ランク: " + globalLvlAbi + "\n" +
             "性格ランク: " + globalLvlPer + "\n" +
             "最重点注意項目: " + globalWorstAbiName + " / " + globalWorstPerName + "\n" +
             "問1正解: " + s.t1H + "\n" +
             "問1ミス: " + s.t1M + "\n" +
-            "問2誤差: " + Math.floor(s.t2E / 3) + "\n" +
-            "問3反射: " + s.t3Rt + "\n" +
-            "問4ミス: " + s.t4M + "\n" +
-            "問5誤差: " + (s.t5E / 3).toFixed(1) + "\n" +
-            "問6ミス: " + s.t6M + "\n" +
-            "問7被弾: " + s.t7K + "\n" +
+            "問2車幅誤差: " + Math.floor(s.t2E / 3) + "\n" +
+            "問3反射速度: " + s.t3Rt + "\n" +
+            "問4衝動ミス: " + s.t4M + "\n" +
+            "問5死角誤差: " + (s.t5E / 3).toFixed(1) + "\n" +
+            "問6反転ミス: " + s.t6M + "\n" +
+            "問7被弾数: " + s.t7K + "\n" +
             "-----------------------------\n" +
             "※このまま送信ボタンを押してください。";
 
