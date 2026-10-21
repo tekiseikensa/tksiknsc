@@ -391,9 +391,9 @@
 
     // ★ 手順遵守エラー(PCE) & 回答時間計測用 ★
     let pceCount = 0;
-    let quizStartTime = Date.now(); // 画面読み込み時に開始時間を記録
+    let quizStartTime = Date.now();
 
-    // --- 16パターンごとの事故画像定義＆ランダム切り替え設定 ---
+    // --- 16パターンごとの事故画像定義＆パス生成 ---
     const accidentImages = {
         'SS': ['accident_SS1.jpg', 'accident_SS2.jpg', 'accident_SS3.jpg'],
         'SB': ['accident_SB1.jpg', 'accident_SB2.jpg', 'accident_SB3.jpg'],
@@ -434,9 +434,9 @@
 
     function getRandomAccidentImage(type) {
         const list = accidentImages[type];
-        if (!list || list.length === 0) return './images/accident_SS1.jpg';
+        if (!list || list.length === 0) return 'images/accident_SS1.jpg';
         const randomIndex = Math.floor(Math.random() * list.length);
-        return `./images/${list[randomIndex]}`;
+        return `images/${list[randomIndex]}`;
     }
 
     let s = { t1H:0, t1M:0, t2E:0, t3Rt:999, t4H:0, t4M:0, t5E:0, t6H:0, t6M:0, t7K:0 };
@@ -625,16 +625,13 @@
 
     let chartAbi = null, chartPer = null;
     let globalLvlAbi = "", globalLvlPer = "", globalWorstAbiName = "", globalWorstPerName = "";
-    let globalResponseSeconds = 0; // 回答所要時間（秒）
+    let globalResponseSeconds = 0;
 
     function generateReport() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
 
-        // ★ 回答所要時間の計算（秒） ★
         globalResponseSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
-
-        // もし30問を45秒未満（1問1.5秒未満）で連打した場合は、早すぎエラーとしてPCEに+1加算
         if (globalResponseSeconds < 45) {
             pceCount++;
         }
@@ -653,7 +650,6 @@
         if (missingTests.length > 0) { missing.push("・未完了の実地テスト: " + missingTests.join(", ")); }
         if (qScores.length < 30) { missing.push('・心理テストの未回答 (' + (30 - qScores.length) + '問分)'); }
 
-        // 未回答のまま進もうとした場合は、裏で「手順遵守エラー(PCE)」をカウントアップ
         if (missing.length > 0) { 
             pceCount++;
             alert("【入力・実施漏れがあります】\n\n" + missing.join("\n") + "\n\nすべての項目を完了してください。"); 
@@ -777,7 +773,7 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ メール送信（回答所要時間: 回答時間(秒) を追加） ★
+    // ★ メール送信（ラベルを明確にしてGASパースエラーを防止） ★
     function sendResultMail() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
@@ -792,7 +788,7 @@
             "性格ランク: " + globalLvlPer + "\n" +
             "最重点注意項目: " + globalWorstAbiName + " / " + globalWorstPerName + "\n" +
             "手順遵守エラー: " + pceCount + "\n" +
-            "回答時間秒: " + globalResponseSeconds + "\n" +  // ★ 回答所要時間（秒）
+            "回答時間秒: " + globalResponseSeconds + "\n" +
             "問1正解: " + s.t1H + "\n" +
             "問1ミス: " + s.t1M + "\n" +
             "問2車幅誤差: " + Math.floor(s.t2E / 3) + "\n" +
