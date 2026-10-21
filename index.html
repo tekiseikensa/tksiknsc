@@ -139,7 +139,7 @@
 <div class="container">
     <h1>WEB運転適性検査</h1>
 
-    <!-- 氏名入力ボックス -->
+    <!-- 氏名入力フォーム -->
     <div class="name-form-box">
         <div style="font-weight: bold; color: #1e293b; font-size: 14px;">受検者のお名前を入力してください</div>
         <div class="name-inputs">
@@ -389,8 +389,9 @@
     // ★ 送信先アドレスの設定 ★
     const EMAIL_ADDRESS = "a.toriumi@nikken-ts.jp";
 
-    // ★ 手順遵守エラー（飛ばし行為・未回答押下の回数）カウント用変数 ★
+    // ★ 手順遵守エラー(PCE) & 回答時間計測用 ★
     let pceCount = 0;
+    let quizStartTime = Date.now(); // 画面読み込み時に開始時間を記録
 
     // --- 16パターンごとの事故画像定義＆ランダム切り替え設定 ---
     const accidentImages = {
@@ -624,10 +625,19 @@
 
     let chartAbi = null, chartPer = null;
     let globalLvlAbi = "", globalLvlPer = "", globalWorstAbiName = "", globalWorstPerName = "";
+    let globalResponseSeconds = 0; // 回答所要時間（秒）
 
     function generateReport() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
+
+        // ★ 回答所要時間の計算（秒） ★
+        globalResponseSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+
+        // もし30問を45秒未満（1問1.5秒未満）で連打した場合は、早すぎエラーとしてPCEに+1加算
+        if (globalResponseSeconds < 45) {
+            pceCount++;
+        }
 
         let qScores = [];
         for(let i=0; i<30; i++) {
@@ -767,7 +777,7 @@
         document.getElementById('result-area').scrollIntoView({behavior: 'smooth'});
     }
 
-    // ★ メール送信（手順遵守エラー pceCount を追加） ★
+    // ★ メール送信（回答所要時間: 回答時間(秒) を追加） ★
     function sendResultMail() {
         let lastName = document.getElementById('emp-last-name').value.trim();
         let firstName = document.getElementById('emp-first-name').value.trim();
@@ -781,7 +791,8 @@
             "能力ランク: " + globalLvlAbi + "\n" +
             "性格ランク: " + globalLvlPer + "\n" +
             "最重点注意項目: " + globalWorstAbiName + " / " + globalWorstPerName + "\n" +
-            "手順遵守エラー: " + pceCount + "\n" +  // ★ 未回答飛ばし回数(PCE)
+            "手順遵守エラー: " + pceCount + "\n" +
+            "回答時間秒: " + globalResponseSeconds + "\n" +  // ★ 回答所要時間（秒）
             "問1正解: " + s.t1H + "\n" +
             "問1ミス: " + s.t1M + "\n" +
             "問2車幅誤差: " + Math.floor(s.t2E / 3) + "\n" +
