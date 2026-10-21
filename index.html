@@ -678,19 +678,30 @@
         globalLvlAbi = lvlAbi;
         globalLvlPer = lvlPer;
 
-        if (typeof Chart !== 'undefined') {
-            let dataset1Abi = { label: 'あなたの能力', data: [a1, a2, a3, a4, a5], backgroundColor: 'rgba(59,130,246,0.4)', borderColor: '#3b82f6', borderWidth: 2 };
-            let datasetAvgAbi = { label: '全体平均', data: [3.4, 3.6, 3.2, 3.5, 3.3], backgroundColor: 'transparent', borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [5, 5], pointRadius: 0 };
-            
-            let dataset1Per = { label: 'あなたの性格', data: [p[0], p[1], p[2], p[3], p[4]], backgroundColor: 'rgba(16,185,129,0.4)', borderColor: '#10b981', borderWidth: 2 };
-            let datasetAvgPer = { label: '全体平均', data: [3.5, 3.4, 3.7, 3.6, 3.3], backgroundColor: 'transparent', borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [5, 5], pointRadius: 0 };
+       if (typeof Chart !== 'undefined') {
+    let dataset1Abi = { label: 'あなたの能力', data: [a1, a2, a3, a4, a5], backgroundColor: 'rgba(59,130,246,0.4)', borderColor: '#3b82f6', borderWidth: 2 };
+    let dataset1Per = { label: 'あなたの性格', data: [p[0], p[1], p[2], p[3], p[4]], backgroundColor: 'rgba(16,185,129,0.4)', borderColor: '#10b981', borderWidth: 2 };
 
-            let opt = { scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display:false } } }, plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 12 } } }, maintainAspectRatio: false };
-            if(chartAbi) chartAbi.destroy();
-            chartAbi = new Chart(document.getElementById('chartAbility').getContext('2d'), { type: 'radar', data: { labels: ['判断の速さ', '正確性', '空間把握', '状況予測', '落ち着き'], datasets: [dataset1Abi, datasetAvgAbi] }, options: opt });
-            if(chartPer) chartPer.destroy();
-            chartPer = new Chart(document.getElementById('chartPersonality').getContext('2d'), { type: 'radar', data: { labels: ['情緒安定', '衝動抑止', 'ルール遵守', '他者配慮', '過信のなさ'], datasets: [dataset1Per, datasetAvgPer] }, options: opt });
-        }
+    let opt = { 
+        scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display:false } } }, 
+        plugins: { legend: { display: false } }, // 凡例（レジェンド）も非表示にしてすっきりさせます
+        maintainAspectRatio: false 
+    };
+    
+    if(chartAbi) chartAbi.destroy();
+    chartAbi = new Chart(document.getElementById('chartAbility').getContext('2d'), { 
+        type: 'radar', 
+        data: { labels: ['判断の速さ', '正確性', '空間把握', '状況予測', '落ち着き'], datasets: [dataset1Abi] }, 
+        options: opt 
+    });
+    
+    if(chartPer) chartPer.destroy();
+    chartPer = new Chart(document.getElementById('chartPersonality').getContext('2d'), { 
+        type: 'radar', 
+        data: { labels: ['情緒安定', '衝動抑止', 'ルール遵守', '他者配慮', '過信のなさ'], datasets: [dataset1Per] }, 
+        options: opt 
+    });
+}
 
         ['SS','SA','SB','SC','AS','AA','AB','AC','BS','BA','BB','BC','CS','CA','CB','CC'].forEach(id => { document.getElementById('cell-'+id).className=''; document.getElementById('cell-'+id).innerText=''; });
         let activeCell = document.getElementById('cell-' + lvlPer + lvlAbi);
